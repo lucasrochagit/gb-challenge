@@ -5,22 +5,20 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { AlphaValidatorUtil } from './util/alpha.validator.util';
 
 @ValidatorConstraint({ async: true })
 export class IsAlphaWithSpacesConstraint
   implements ValidatorConstraintInterface
 {
-  validate(cpf: string, validationArguments?: ValidationArguments): boolean {
-    return this.isAlphaWithSpaces(cpf);
+  validate(str: string): boolean {
+    return AlphaValidatorUtil.isAlphaWithSpaces(str);
   }
 
   defaultMessage?(validationArguments?: ValidationArguments): string {
     return `${validationArguments.property} must contains letters and a single space between words`;
   }
 
-  isAlphaWithSpaces(cpf: string): boolean {
-    return /^([A-ZÀ-Üa-zà-ü]+\s?)*(?<! )$/.test(cpf);
-  }
 }
 
 export function IsAlphaWithSpaces(validationOptions?: ValidationOptions) {
