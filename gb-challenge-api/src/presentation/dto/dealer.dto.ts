@@ -6,13 +6,13 @@ import {
     MaxLength,
     MinLength
 } from 'class-validator';
-import { IsAlphaWithSpaces } from '../validators/is.alpha.with.spaces';
-import { IsValidCPF } from '../validators/is.valid.cpf';
-import { ReadonlyParamDTO } from './readonly.param.dto';
+import { IsAlphaWithSpaces } from '../validator/is.alpha.with.spaces';
+import { IsValidCPF } from '../validator/is.valid.cpf';
+import { DTO } from './dto';
 
 export type DealerDTO = CreateDealerDTO;
 
-export class CreateDealerDTO extends ReadonlyParamDTO {
+export class CreateDealerDTO extends DTO {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
