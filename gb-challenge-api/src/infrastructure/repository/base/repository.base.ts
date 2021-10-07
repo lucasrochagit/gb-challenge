@@ -7,8 +7,8 @@ export class BaseRepository<Document, Schema> {
     return this._model.create(item);
   }
 
-  async find(filter: FilterQuery<Document>): Promise<Document[]> {
-    return this._model.find(filter);
+  async find(): Promise<Document[]> {
+    return this._model.find();
   }
 
   async findOne(filter: FilterQuery<Document>): Promise<Document> {
