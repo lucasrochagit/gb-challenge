@@ -1,9 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { Serializer } from '../../common/serializer/serializer';
 import { DealerRepository } from '../../infrastructure/repository/dealer.repository';
-import {
-    Dealer
-} from '../../infrastructure/schema/dealer.schema';
+import { Dealer } from '../../infrastructure/schema/dealer.schema';
+import { DealerModelMapper } from '../mapper/dealer.model.mapper';
 import { DealerModel } from '../model/dealer.model';
 import { PasswordUtil } from '../util/password.util';
 
@@ -11,7 +9,7 @@ import { PasswordUtil } from '../util/password.util';
 export class DealerService {
   constructor(
     private readonly _repository: DealerRepository,
-    private readonly _serializer: Serializer<DealerModel, Dealer>,
+    private readonly _mapper: DealerModelMapper,
   ) {}
 
   async create(item: DealerModel): Promise<DealerModel> {
@@ -32,13 +30,10 @@ export class DealerService {
       );
     }
 
-    const dealer: Dealer = this._serializer.serialize(item);
+    const dealer: Dealer = this._mapper.deserialize(item);
     dealer.password = PasswordUtil.encryptPassword(dealer.password);
 
     const result: Dealer = await this._repository.create(dealer);
-    return this._serializer.deserialize(result, {
-      ignoreFromTarget: ['updated_at', 'password'],
-      mappingParams: { _id: 'id' },
-    });
+    return this._mapper.serialize(result);
   }
 }
