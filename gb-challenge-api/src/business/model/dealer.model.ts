@@ -1,19 +1,10 @@
-export class DealerModel {
-  private _id: string;
+import { Model } from './model';
+
+export class DealerModel extends Model {
   private _full_name: string;
   private _cpf: string;
   private _email: string;
   private _password: string;
-  private _created_at: string;
-  private _updated_at: string;
-
-  public get id(): string {
-    return this._id;
-  }
-
-  public set id(value: string) {
-    this._id = value;
-  }
 
   public get full_name(): string {
     return this._full_name;
@@ -45,21 +36,5 @@ export class DealerModel {
 
   public set password(value: string) {
     this._password = value;
-  }
-
-  public get created_at(): string {
-    return this._created_at;
-  }
-
-  public set created_at(value: string) {
-    this._created_at = value;
-  }
-
-  public get updated_at(): string {
-    return this._updated_at;
-  }
-
-  public set updated_at(value: string) {
-    this._updated_at = value;
   }
 }
