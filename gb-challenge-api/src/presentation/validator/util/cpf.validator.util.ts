@@ -1,5 +1,6 @@
 export class CPFValidatorUtil {
   static isValidCPF(cpf: string): boolean {
+    if (!cpf) return false;
     const only_numbers: string = cpf.replace(/\D+/g, '');
 
     if (only_numbers.length !== 11) {
