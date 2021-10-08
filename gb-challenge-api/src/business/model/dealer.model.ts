@@ -1,6 +1,6 @@
-import { Model } from './model';
+import { ReadOnlyModel } from './readonly.model';
 
-export class DealerModel extends Model {
+export class DealerModel extends ReadOnlyModel {
   private _full_name: string;
   private _cpf: string;
   private _email: string;
