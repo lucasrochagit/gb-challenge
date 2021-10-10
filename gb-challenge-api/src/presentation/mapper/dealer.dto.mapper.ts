@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DealerModel } from '../../business/model/dealer.model';
 import { IMapper } from '../../common/interface/mapper/mapper.interface';
-import { Dealer } from '../../infrastructure/schema/dealer.schema';
 import { DealerDTO } from '../dto/dealer.dto';
 
 @Injectable()
