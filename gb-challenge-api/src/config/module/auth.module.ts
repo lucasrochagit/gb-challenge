@@ -25,9 +25,9 @@ import { AuthRequestDTOMapper } from '../../presentation/mapper/auth.request.dto
     AuthDTOMapper,
     AuthRequestDTOMapper,
     AuthService,
+    AuthModelMapper,
     AuthRepository,
     DealerRepository,
-    AuthModelMapper,
   ],
 })
 export class AuthModule {}
