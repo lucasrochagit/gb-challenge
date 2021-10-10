@@ -35,7 +35,10 @@ export class SaleService {
 
   async updateById(_id: string, item: SaleModel): Promise<SaleModel> {
     const sale: Sale = this._mapper.deserialize(item);
-    const result: Sale = await this._repository.updateOne({ _id }, sale);
+    const result: Sale = await this._repository.updateOne(
+      { _id },
+      this.setGeneratedInfo(sale),
+    );
     if (!result) {
       throw new NotFoundException('Sale not found or already removed.');
     }
@@ -53,20 +56,22 @@ export class SaleService {
       sale.status = SaleStatusEnum.APPROVED;
     }
 
-    sale.value = Number(sale.value.toFixed(2));
-    sale.cashback_percentage = 10;
+    if (sale.value) {
+      sale.value = Number(sale.value.toFixed(2));
+      sale.cashback_percentage = 10;
 
-    if (sale.value >= 1000 && sale.value <= 1500) {
-      sale.cashback_percentage = 15;
+      if (sale.value >= 1000 && sale.value <= 1500) {
+        sale.cashback_percentage = 15;
+      }
+
+      if (sale.value > 1500) {
+        sale.cashback_percentage = 20;
+      }
+
+      sale.cashback_value = Number(
+        ((sale.cashback_percentage / 100) * sale.value).toFixed(2),
+      );
     }
-
-    if (sale.value > 1500) {
-      sale.cashback_percentage = 20;
-    }
-
-    sale.cashback_value = Number(
-      ((sale.cashback_percentage / 100) * sale.value).toFixed(2),
-    );
     return sale;
   }
 }
