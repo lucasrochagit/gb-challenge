@@ -7,7 +7,6 @@ export type DealerDocument = Dealer & Document;
 @Schema({
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   versionKey: false,
-  toJSON: ReadOnlySchema.toJSON()
 })
 export class Dealer extends ReadOnlySchema {
   @Prop()
