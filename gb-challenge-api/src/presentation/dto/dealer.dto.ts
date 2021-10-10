@@ -27,7 +27,7 @@ export class CreateDealerDTO extends ReadOnlyDTO {
   @IsString()
   @IsNotEmpty()
   @Matches(/^(\d\d\d.\d\d\d.\d\d\d-\d\d)$/, {
-    message: 'cpf must follow the pattern: XXX.XXX.XX-XX',
+    message: 'cpf must follow the pattern: XXX.XXX.XXX-XX',
   })
   @IsValidCPF()
   cpf: string;
@@ -59,7 +59,7 @@ export class UpdateDealerDTO extends ReadOnlyDTO {
   @IsString()
   @IsNotEmpty()
   @Matches(/^(\d\d\d.\d\d\d.\d\d\d-\d\d)$/, {
-    message: 'cpf must follow the pattern: XXX.XXX.XX-XX',
+    message: 'cpf must follow the pattern: XXX.XXX.XXX-XX',
   })
   @IsValidCPF()
   cpf: string;
