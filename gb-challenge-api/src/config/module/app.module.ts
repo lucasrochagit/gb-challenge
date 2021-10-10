@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppService } from '../../business/service/app.service';
 import { AppController } from '../../presentation/controller/app.controller';
 import { AuthModule } from './auth.module';
+import { CashbackModule } from './cashback.module';
 import { DealerModule } from './dealer.module';
 import { SaleModule } from './sale.module';
 
@@ -12,6 +13,7 @@ import { SaleModule } from './sale.module';
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     AuthModule,
+    CashbackModule,
     DealerModule,
     SaleModule,
   ],
