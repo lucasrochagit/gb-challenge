@@ -27,11 +27,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       details: exception.toString(),
     };
 
-    if (ENV === 'prod') {
-      delete generic_exception_body.details;
-      delete generic_exception_body.request;
-    }
-
     const generic_exception = new InternalServerErrorException(
       generic_exception_body,
     );
@@ -40,6 +35,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? [exception.getStatus(), exception.getResponse()]
         : [generic_exception.getStatus(), generic_exception.getResponse()];
+
+    if (ENV === 'prod') {
+      delete exception_body['details'];
+      delete exception_body['request'];
+    }
 
     response.status(exception_status).json(exception_body);
   }
