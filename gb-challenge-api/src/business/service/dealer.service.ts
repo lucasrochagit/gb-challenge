@@ -45,7 +45,7 @@ export class DealerService {
     return this._mapper.serialize(result);
   }
 
-  async update(_id: string, item: DealerModel): Promise<DealerModel> {
+  async updateById(_id: string, item: DealerModel): Promise<DealerModel> {
     const checkExistsQuery = { _id: { $ne: _id }, $or: [] };
     if (item.cpf) checkExistsQuery.$or.push({ cpf: item.cpf });
     if (item.email) checkExistsQuery.$or.push({ email: item.email });

@@ -46,12 +46,12 @@ export class DealerController {
   }
 
   @Put(':dealer_id')
-  async update(
+  async updateById(
     @Param() params: MethodByIdDealerDTO,
     @Body() dto: UpdateDealerDTO,
   ): Promise<DealerDTO> {
     const model: DealerModel = this._mapper.deserialize(dto);
-    const result: DealerModel = await this._service.update(
+    const result: DealerModel = await this._service.updateById(
       params.dealer_id,
       model,
     );
