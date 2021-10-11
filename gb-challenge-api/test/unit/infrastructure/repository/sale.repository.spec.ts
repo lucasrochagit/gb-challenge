@@ -1,32 +1,32 @@
 import { mock } from 'sinon';
-import { DealerRepository } from '../../../../src/infrastructure/repository/dealer.repository';
-import { Dealer } from '../../../../src/infrastructure/schema/dealer.schema';
-import { DealerMock } from '../../../mock/dealer.mock';
+import { SaleRepository } from '../../../../src/infrastructure/repository/sale.repository';
+import { Sale } from '../../../../src/infrastructure/schema/sale.schema';
+import { SaleMock } from '../../../mock/sale.mock';
 
-describe('DealerRepository', () => {
+describe('SaleRepository', () => {
   let model: any;
-  let repository: DealerRepository;
+  let repository: SaleRepository;
 
   let info: any;
-  let dealerRequest: Dealer;
-  let dealerResponse: Dealer;
+  let saleRequest: Sale;
+  let saleResponse: Sale;
   let databaseError: any;
 
   beforeAll(() => {
     model = mock();
-    repository = new DealerRepository(model);
-    info = DealerMock.getInfo();
-    dealerRequest = DealerMock.asDocumentRequest(info);
-    dealerResponse = DealerMock.asDocumentResponse(info);
+    repository = new SaleRepository(model);
+    info = SaleMock.getInfo();
+    saleRequest = SaleMock.asDocumentRequest(info);
+    saleResponse = SaleMock.asDocumentResponse(info);
     databaseError = { message: 'Database Error' };
   });
 
   describe('create()', () => {
     describe('when create is successful', () => {
-      it('should return the created dealer', async () => {
-        model.create = jest.fn().mockResolvedValueOnce(dealerResponse);
-        const result = await repository.create(dealerRequest);
-        expect(result).toMatchObject(dealerResponse);
+      it('should return the created sale', async () => {
+        model.create = jest.fn().mockResolvedValueOnce(saleResponse);
+        const result = await repository.create(saleRequest);
+        expect(result).toMatchObject(saleResponse);
       });
     });
 
@@ -34,7 +34,7 @@ describe('DealerRepository', () => {
       it('should return the database error', async () => {
         model.create = jest.fn().mockRejectedValueOnce(databaseError);
         try {
-          await repository.create(dealerRequest);
+          await repository.create(saleRequest);
         } catch (err) {
           expect(err).toMatchObject(databaseError);
         }
@@ -44,14 +44,14 @@ describe('DealerRepository', () => {
 
   describe('find()', () => {
     describe('when find is successful', () => {
-      it('should return a list of dealers', async () => {
-        model.find = jest.fn().mockResolvedValueOnce([dealerResponse]);
+      it('should return a list of sales', async () => {
+        model.find = jest.fn().mockResolvedValueOnce([saleResponse]);
         const result = await repository.find();
-        expect(result).toMatchObject([dealerResponse]);
+        expect(result).toMatchObject([saleResponse]);
       });
     });
 
-    describe('when there is no dealer', () => {
+    describe('when there is no sale', () => {
       it('should return an empty list', async () => {
         model.find = jest.fn().mockResolvedValueOnce([]);
         const result = await repository.find();
@@ -73,17 +73,17 @@ describe('DealerRepository', () => {
 
   describe('findOne()', () => {
     describe('when findOne is successful', () => {
-      it('should return the founded dealer', async () => {
-        model.findOne = jest.fn().mockResolvedValueOnce(dealerResponse);
-        const result = await repository.findOne({ _id: dealerResponse.id });
-        expect(result).toMatchObject(dealerResponse);
+      it('should return the founded sale', async () => {
+        model.findOne = jest.fn().mockResolvedValueOnce(saleResponse);
+        const result = await repository.findOne({ _id: saleResponse.id });
+        expect(result).toMatchObject(saleResponse);
       });
     });
 
-    describe('when the dealer is not founded', () => {
+    describe('when the sale is not founded', () => {
       it('should return null', async () => {
         model.findOne = jest.fn().mockResolvedValueOnce(null);
-        const result = await repository.findOne({ _id: dealerResponse.id });
+        const result = await repository.findOne({ _id: saleResponse.id });
         expect(result).toBeNull();
       });
     });
@@ -92,7 +92,7 @@ describe('DealerRepository', () => {
       it('should return the database error', async () => {
         model.findOne = jest.fn().mockRejectedValueOnce(databaseError);
         try {
-          await repository.findOne({ _id: dealerResponse.id });
+          await repository.findOne({ _id: saleResponse.id });
         } catch (err) {
           expect(err).toMatchObject(databaseError);
         }
@@ -102,24 +102,22 @@ describe('DealerRepository', () => {
 
   describe('updateOne()', () => {
     describe('when updateOne is successful', () => {
-      it('should return the updated dealer', async () => {
-        model.findOneAndUpdate = jest
-          .fn()
-          .mockResolvedValueOnce(dealerResponse);
+      it('should return the updated sale', async () => {
+        model.findOneAndUpdate = jest.fn().mockResolvedValueOnce(saleResponse);
         const result = await repository.updateOne(
-          { _id: dealerResponse.id },
-          dealerRequest,
+          { _id: saleResponse.id },
+          saleRequest,
         );
-        expect(result).toMatchObject(dealerResponse);
+        expect(result).toMatchObject(saleResponse);
       });
     });
 
-    describe('when the dealer is not founded', () => {
+    describe('when the sale is not founded', () => {
       it('should return null', async () => {
         model.findOneAndUpdate = jest.fn().mockResolvedValueOnce(null);
         const result = await repository.updateOne(
-          { _id: dealerResponse.id },
-          dealerRequest,
+          { _id: saleResponse.id },
+          saleRequest,
         );
         expect(result).toBeNull();
       });
@@ -129,7 +127,7 @@ describe('DealerRepository', () => {
       it('should return the database error', async () => {
         model.findOneAndUpdate = jest.fn().mockRejectedValueOnce(databaseError);
         try {
-          await repository.updateOne({ _id: dealerResponse.id }, dealerRequest);
+          await repository.updateOne({ _id: saleResponse.id }, saleRequest);
         } catch (err) {
           expect(err).toMatchObject(databaseError);
         }
@@ -139,19 +137,17 @@ describe('DealerRepository', () => {
 
   describe('deleteOne()', () => {
     describe('when deleteOne is successful', () => {
-      it('should return the deleted dealer', async () => {
-        model.findOneAndDelete = jest
-          .fn()
-          .mockResolvedValueOnce(dealerResponse);
-        const result = await repository.deleteOne({ _id: dealerResponse.id });
-        expect(result).toMatchObject(dealerResponse);
+      it('should return the deleted sale', async () => {
+        model.findOneAndDelete = jest.fn().mockResolvedValueOnce(saleResponse);
+        const result = await repository.deleteOne({ _id: saleResponse.id });
+        expect(result).toMatchObject(saleResponse);
       });
     });
 
-    describe('when dealer is not founded', () => {
+    describe('when sale is not founded', () => {
       it('should return null', async () => {
         model.findOneAndDelete = jest.fn().mockResolvedValueOnce(null);
-        const result = await repository.deleteOne({ _id: dealerResponse.id });
+        const result = await repository.deleteOne({ _id: saleResponse.id });
         expect(result).toBeNull();
       });
     });
@@ -160,7 +156,7 @@ describe('DealerRepository', () => {
       it('should return the database error', async () => {
         model.findOneAndDelete = jest.fn().mockRejectedValueOnce(databaseError);
         try {
-          await repository.deleteOne({ _id: dealerResponse.id });
+          await repository.deleteOne({ _id: saleResponse.id });
         } catch (err) {
           expect(err).toMatchObject(databaseError);
         }
@@ -171,19 +167,19 @@ describe('DealerRepository', () => {
   describe('checkExists()', () => {
     describe('when checkExists is successful', () => {
       it('should return true', async () => {
-        model.findOne = jest.fn().mockResolvedValueOnce(dealerResponse);
+        model.findOne = jest.fn().mockResolvedValueOnce(saleResponse);
         const result = await repository.checkExists({
-          cpf: dealerRequest.cpf,
+          dealer_cpf: saleRequest.dealer_cpf,
         });
         expect(result).toEqual(true);
       });
     });
 
-    describe('when the dealer is not founded', () => {
+    describe('when the sale is not founded', () => {
       it('should return false', async () => {
         model.findOne = jest.fn().mockResolvedValueOnce(null);
         const result = await repository.checkExists({
-          cpf: dealerRequest.cpf,
+          dealer_cpf: saleRequest.dealer_cpf,
         });
         expect(result).toEqual(false);
       });
@@ -193,7 +189,7 @@ describe('DealerRepository', () => {
       it('should return the database error', async () => {
         model.findOne = jest.fn().mockRejectedValueOnce(databaseError);
         try {
-          await repository.checkExists({ cpf: dealerRequest.cpf });
+          await repository.checkExists({ dealer_cpf: saleRequest.dealer_cpf });
         } catch (err) {
           expect(err).toMatchObject(databaseError);
         }

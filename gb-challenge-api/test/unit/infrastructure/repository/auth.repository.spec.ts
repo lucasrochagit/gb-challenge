@@ -1,26 +1,23 @@
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { mock } from 'sinon';
 import { AuthRepository } from '../../../../src/infrastructure/repository/auth.repository';
-import {
-  Auth,
-  AuthDocument,
-} from '../../../../src/infrastructure/schema/auth.schema';
-import { bootstrapTest } from '../../../app/test.app';
+import { Auth } from '../../../../src/infrastructure/schema/auth.schema';
 import { AuthMock } from '../../../mock/auth.mock';
 
 describe('AuthRepository', () => {
-  let model: Model<AuthDocument>;
+  let model: any;
   let repository: AuthRepository;
+
+  let info: any;
   let authRequest: Auth;
   let authResponse: Auth;
   let databaseError: any;
 
-  beforeAll(async () => {
-    const app = await bootstrapTest();
-    model = app.get<Model<AuthDocument>>(getModelToken(Auth.name));
-    repository = app.get<AuthRepository>(AuthRepository);
-    authRequest = AuthMock.asDocumentRequest();
-    authResponse = AuthMock.asDocumentResponse();
+  beforeAll(() => {
+    model = mock();
+    repository = new AuthRepository(model);
+    info = AuthMock.getInfo();
+    authRequest = AuthMock.asDocumentRequest(info);
+    authResponse = AuthMock.asDocumentResponse(info);
     databaseError = { message: 'Database Error' };
   });
 

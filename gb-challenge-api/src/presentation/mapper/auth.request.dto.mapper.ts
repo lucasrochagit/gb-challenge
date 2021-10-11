@@ -13,6 +13,7 @@ export class AuthRequestDTOMapper
 
   deserialize(source: AuthRequestDTO): AuthRequestModel {
     const result: AuthRequestModel = new AuthRequestModel();
+    if (!source) return result;
 
     if (source.login) result.login = source.login;
     if (source.password) result.password = source.password;

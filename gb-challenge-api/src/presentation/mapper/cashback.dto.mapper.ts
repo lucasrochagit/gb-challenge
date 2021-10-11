@@ -7,6 +7,7 @@ import { IMapper } from '../../common/interface/mapper/mapper.interface';
 export class CashbackDTOMapper implements IMapper<CashbackDTO, CashbackModel> {
   serialize(target: CashbackModel): CashbackDTO {
     const result: CashbackDTO = {} as CashbackDTO;
+    if (!target) return result;
 
     if (target.dealer_cpf) result.dealer_cpf = target.dealer_cpf;
     if (target.cashback_amount) result.cashback_amount = target.cashback_amount;

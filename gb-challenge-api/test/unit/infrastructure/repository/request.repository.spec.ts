@@ -1,21 +1,19 @@
-import { RequestRepository } from '../../../../src/infrastructure/repository/request.repository';
-import { bootstrapTest } from '../../../app/test.app';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
 import { HttpStatus, UnauthorizedException } from '@nestjs/common';
-import { DealerMock } from '../../../mock/dealer.mock';
-import { getId, getStr } from 'json-generator';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { getId } from 'json-generator';
 import { HttpMethod } from '../../../../src/common/enum/http.enum';
+import { RequestRepository } from '../../../../src/infrastructure/repository/request.repository';
 
 describe('RequestRepository', () => {
   let repository: RequestRepository;
   let axiosMockAdapter: MockAdapter;
+  
   let url: string;
   let resourceInfo: any;
 
-  beforeAll(async () => {
-    const app = await bootstrapTest();
-    repository = app.get<RequestRepository>(RequestRepository);
+  beforeAll(() => {
+    repository = new RequestRepository();
     axiosMockAdapter = new MockAdapter(axios);
     url = 'http://localhost:3000/resources';
     resourceInfo = { id: getId('objectId'), name: 'John Doe' };

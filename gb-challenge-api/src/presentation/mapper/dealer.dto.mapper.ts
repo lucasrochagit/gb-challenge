@@ -7,6 +7,7 @@ import { DealerDTO } from '../dto/dealer.dto';
 export class DealerDTOMapper implements IMapper<DealerDTO, DealerModel> {
   serialize(target: DealerModel): DealerDTO {
     const result: DealerDTO = {} as DealerDTO;
+    if (!target) return result;
 
     if (target.id) result.id = target.id;
     if (target.full_name) result.full_name = target.full_name;
@@ -20,6 +21,7 @@ export class DealerDTOMapper implements IMapper<DealerDTO, DealerModel> {
 
   deserialize(source: DealerDTO): DealerModel {
     const result: DealerModel = new DealerModel();
+    if (!source) return result;
 
     if (source.full_name) result.full_name = source.full_name;
     if (source.cpf) result.cpf = source.cpf;

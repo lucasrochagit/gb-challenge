@@ -13,8 +13,10 @@ export class DealerPasswordDTOMapper
   serialize(target: DealerPasswordModel): UpdateDealerPasswordDTO {
     throw new Error('Method not implemented.');
   }
+  
   deserialize(source: UpdateDealerPasswordDTO): DealerPasswordModel {
     const result: DealerPasswordModel = new DealerPasswordModel();
+    if (!source) return result;
 
     if (source.old_password) result.old_password = source.old_password;
     if (source.new_password) result.new_password = source.new_password;

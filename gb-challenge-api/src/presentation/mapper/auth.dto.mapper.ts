@@ -7,6 +7,7 @@ import { AuthDTO } from '../dto/auth.dto';
 export class AuthDTOMapper implements IMapper<AuthDTO, AuthModel> {
   serialize(target: AuthModel): AuthDTO {
     const result: AuthDTO = {} as AuthDTO;
+    if (!target) return result;
 
     if (target.access_token) result.access_token = target.access_token;
     if (target.refresh_token) result.refresh_token = target.refresh_token;
@@ -18,6 +19,7 @@ export class AuthDTOMapper implements IMapper<AuthDTO, AuthModel> {
 
   deserialize(source: AuthDTO): AuthModel {
     const result: AuthModel = new AuthModel();
+    if (!source) return result;
 
     if (source.access_token) result.access_token = source.access_token;
     if (source.refresh_token) result.refresh_token = source.refresh_token;

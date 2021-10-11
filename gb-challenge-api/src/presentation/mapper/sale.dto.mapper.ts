@@ -7,6 +7,7 @@ import { SaleDTO } from '../dto/sale.dto';
 export class SaleDTOMapper implements IMapper<SaleDTO, SaleModel> {
   serialize(target: SaleModel): SaleDTO {
     const result: SaleDTO = {} as SaleDTO;
+    if (!target) return result;
 
     if (target.code) result.code = target.code;
     if (target.value) result.value = target.value;
@@ -21,6 +22,7 @@ export class SaleDTOMapper implements IMapper<SaleDTO, SaleModel> {
 
   deserialize(source: SaleDTO): SaleModel {
     const result: SaleModel = new SaleModel();
+    if (!source) return result;
 
     if (source.code) result.code = source.code;
     if (source.value) result.value = source.value;
