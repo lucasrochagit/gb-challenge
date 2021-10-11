@@ -18,33 +18,10 @@ type Options = {
 
 @Injectable()
 export class RequestRepository {
-  async get(options: Options): Promise<any> {
-    return this.request(HttpMethod.GET, options);
-  }
-
-  async post(options: Options): Promise<any> {
-    return this.request(HttpMethod.POST, options);
-  }
-
-  async put(options: Options): Promise<any> {
-    return this.request(HttpMethod.PUT, options);
-  }
-
-  async patch(options: Options): Promise<any> {
-    return this.request(HttpMethod.PATCH, options);
-  }
-
-  async delete(options: Options): Promise<any> {
-    return this.request(HttpMethod.DELETE, options);
-  }
-
   async request(method: HttpMethod, options: Options): Promise<any> {
     try {
       return this.handleResponse(await axios({ method, ...options }));
     } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      }
       throw this.handleError(method, options, err);
     }
   }
@@ -62,9 +39,6 @@ export class RequestRepository {
     options: Options,
     err: any,
   ): HttpException {
-    if (err.statusCode && err.data) {
-      throw err;
-    }
     if (err.isAxiosError && err.response.status && err.response.data) {
       const { body, statusCode } = this.handleBody(err.response);
       return new HttpException(body, statusCode);
@@ -86,9 +60,6 @@ export class RequestRepository {
 
   private handleBody(_body: any): any {
     const { data, status } = _body;
-
-    console.log('typeof', typeof data)
-
     const body =
       typeof data === 'string' && JsonUtil.isJSONString(data)
         ? JSON.parse(data)

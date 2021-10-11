@@ -25,79 +25,6 @@ describe('RequestRepository', () => {
     axiosMockAdapter.reset();
   });
 
-  describe('get()', () => {
-    describe('when GET request is successful', () => {
-      it('should return the response body', async () => {
-        axiosMockAdapter.onGet(url).replyOnce(HttpStatus.OK, resourceInfo);
-
-        const result = await repository.get({ url });
-        expect(result).toMatchObject(resourceInfo);
-      });
-    });
-  });
-
-  describe('post()', () => {
-    describe('when POST request is successful', () => {
-      it('should return the response body', async () => {
-        axiosMockAdapter
-          .onPost(url)
-          .replyOnce(HttpStatus.CREATED, resourceInfo);
-
-        const result = await repository.post({ url, data: resourceInfo });
-        expect(result).toMatchObject(resourceInfo);
-      });
-    });
-  });
-
-  describe('put()', () => {
-    describe('when PUT request is successful', () => {
-      it('should return the response body', async () => {
-        axiosMockAdapter
-          .onPut(`${url}/${resourceInfo.id}`)
-          .replyOnce(HttpStatus.OK, resourceInfo);
-
-        const result = await repository.put({
-          url: `${url}/${resourceInfo.id}`,
-          data: resourceInfo,
-        });
-        expect(result).toMatchObject(resourceInfo);
-      });
-    });
-  });
-
-  describe('patch()', () => {
-    describe('when PATCH request is successful', () => {
-      it('should return the response body', async () => {
-        axiosMockAdapter
-          .onPatch(`${url}/${resourceInfo.id}`)
-          .replyOnce(HttpStatus.OK, resourceInfo);
-
-        const result = await repository.patch({
-          url: `${url}/${resourceInfo.id}`,
-          data: {
-            name: 'John Doe',
-          },
-        });
-        expect(result).toMatchObject(resourceInfo);
-      });
-    });
-  });
-
-  describe('delete()', () => {
-    describe('when DELETE request is successful', () => {
-      it('should return the response body', async () => {
-        axiosMockAdapter
-          .onDelete(`${url}/${resourceInfo.id}`)
-          .replyOnce(HttpStatus.NO_CONTENT);
-
-        const result = await repository.delete({
-          url: `${url}/${resourceInfo.id}`,
-        });
-        expect(result).toBeUndefined();
-      });
-    });
-  });
-
   describe('request()', () => {
     describe('when request is successful', () => {
       it('should return the response body as json', async () => {
@@ -138,6 +65,25 @@ describe('RequestRepository', () => {
         } catch (err) {
           expect(err).toHaveProperty('status', exception.getStatus());
           expect(err.response).toHaveProperty('message', 'Unauthorized');
+        }
+      });
+    });
+
+    describe('when request returns a generic exception', () => {
+      it('should throw the exception', async () => {
+        const exception = { message: 'Generic Exception' };
+        axiosMockAdapter
+          .onGet(url)
+          .replyOnce(HttpStatus.INTERNAL_SERVER_ERROR, exception);
+
+        try {
+          await repository.request(HttpMethod.GET, { url });
+        } catch (err) {
+          expect(err).toHaveProperty(
+            'status',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+          expect(err.response).toHaveProperty('message', 'Generic Exception');
         }
       });
     });

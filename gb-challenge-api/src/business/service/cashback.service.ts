@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { HttpMethod } from '../../common/enum/http.enum';
 import { RequestRepository } from '../../infrastructure/repository/request.repository';
 import { CashbackModelMapper } from '../mapper/cashback.model.mapper';
 import { CashbackModel } from '../model/cashback.model';
@@ -12,12 +13,13 @@ export class CashbackService {
 
   async getCashbackAmount(cpf: string): Promise<CashbackModel> {
     const { CASHBACK_AMOUNT_API_URL, CASHBACK_AMOUNT_API_TOKEN } = process.env;
-
     const onlyNumbersCPF: string = cpf.replace(/\D+/g, '');
-    const url: string = `${CASHBACK_AMOUNT_API_URL}?cpf=${onlyNumbersCPF}`;
-    const headers: any = { token: CASHBACK_AMOUNT_API_TOKEN };
+    const options: any = {
+      url: `${CASHBACK_AMOUNT_API_URL}?cpf=${onlyNumbersCPF}`,
+      headers: { token: CASHBACK_AMOUNT_API_TOKEN },
+    };
 
-    const result: any = await this._repository.get({ url, headers });
+    const result: any = await this._repository.request(HttpMethod.GET, options);
     return this._mapper.serialize({
       cpf,
       ...result,
