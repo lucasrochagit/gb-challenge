@@ -1,18 +1,19 @@
 import {
-  BadRequestException,
   HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import * as Request from 'native-request';
+import axios from 'axios';
+import { Promise } from 'mongoose';
 import { HttpMethod } from '../../common/enum/http.enum';
 import { JsonUtil } from '../../common/util/json.util';
 
 type Options = {
   url: string;
   headers?: { [key: string]: string };
-  params?: { [key: string]: string };
-  body?: { [key: string]: any };
+  params?: { [key: string]: any };
+  data?: any;
 };
 
 @Injectable()
@@ -38,42 +39,67 @@ export class RequestRepository {
   }
 
   async request(method: HttpMethod, options: Options): Promise<any> {
-    const data = { method, ...options };
+    try {
+      return this.handleResponse(await axios({ method, ...options }));
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      throw this.handleError(method, options, err);
+    }
+  }
 
-    return new Promise<any>((resolve, reject) => {
-      Request.request(data, (err: any, data: any, status: number, _: any) => {
-        if (err) {
-          const error_body = {
-            message:
-              'An error occurred while making an external request. Please try again later.',
-            request: {
-              method: method,
-              url: options.url,
-              params: options.params,
-              body: options.body,
-            },
-            details: err,
-          };
-          return reject(new InternalServerErrorException(error_body));
-        }
+  private handleResponse(response: any): any | HttpException {
+    const { body, statusCode } = this.handleBody(response);
+    if (!this.isSuccessStatusCode(statusCode)) {
+      throw new HttpException(body, statusCode);
+    }
+    return body;
+  }
 
-        const body =
-          typeof data === 'string' && JsonUtil.isJSONString(data)
-            ? JSON.parse(data)
-            : data;
+  private handleError(
+    method: string,
+    options: Options,
+    err: any,
+  ): HttpException {
+    if (err.statusCode && err.data) {
+      throw err;
+    }
+    if (err.isAxiosError && err.response.status && err.response.data) {
+      const { body, statusCode } = this.handleBody(err.response);
+      return new HttpException(body, statusCode);
+    }
 
-        const statusCode =
-          typeof body === 'object' && (body.status || body.statusCode)
-            ? body.status || body.statusCode
-            : status;
+    const errorBody = {
+      message:
+        'An error occurred while making an external request. Please try again later.',
+      request: {
+        method: method,
+        url: options.url,
+        params: options.params,
+        body: options.data,
+      },
+      details: err,
+    };
+    return new InternalServerErrorException(errorBody);
+  }
 
-        if (!this.isSuccessStatusCode(statusCode)) {
-          return reject(new HttpException(body, statusCode));
-        }
+  private handleBody(_body: any): any {
+    const { data, status } = _body;
 
-        return resolve(body);
-      });
-    });
+    console.log('typeof', typeof data)
+
+    const body =
+      typeof data === 'string' && JsonUtil.isJSONString(data)
+        ? JSON.parse(data)
+        : data;
+
+    const statusCode =
+      typeof body === 'object' && (body.status || body.statusCode)
+        ? body.status || body.statusCode
+        : status;
+
+    return { body, statusCode };
   }
 
   private isSuccessStatusCode(status: number): boolean {
