@@ -52,22 +52,20 @@ export class AuthService {
   }
 
   async refreshToken(oldAuthData: AuthModel): Promise<AuthModel> {
-    const owner: string = TokenUtil.getTokenPayloadSub(
+    const payloadSub: string = TokenUtil.getTokenPayloadSub(
       oldAuthData.access_token,
     );
-    if (!owner) {
-      throw new BadRequestException('Invalid access token.');
-    }
 
     const existsOwner: boolean = await this._dealerRepository.checkExists({
-      _id: owner,
+      _id: payloadSub,
     });
 
     const previousToken: Auth = await this._authRepository.findOne({
-      owner: owner,
+      owner: payloadSub,
     });
 
     if (
+      !payloadSub ||
       !existsOwner ||
       !previousToken ||
       previousToken.access_token !== oldAuthData.access_token
@@ -83,10 +81,13 @@ export class AuthService {
       );
     }
 
-    const newAuthData: Auth = this.generateAuth(owner);
+    const newAuthData: Auth = this.generateAuth(payloadSub);
 
     return this._mapper.serialize(
-      await this._authRepository.updateOne({ ownerId: owner }, newAuthData),
+      await this._authRepository.updateOne(
+        { ownerId: payloadSub },
+        newAuthData,
+      ),
     );
   }
 

@@ -68,10 +68,11 @@ export class DealerService {
   ): Promise<void> {
     const dealer: Dealer = await this._repository.findOne({ _id });
 
-    if (
-      !dealer ||
-      !PasswordUtil.isSamePassword(passwords.old_password, dealer.password)
-    ) {
+    if (!dealer) {
+      throw new NotFoundException('Dealer not found or already removed.');
+    }
+
+    if (!PasswordUtil.isSamePassword(passwords.old_password, dealer.password)) {
       throw new BadRequestException(
         'Old password does not match with current password.',
       );
