@@ -6,6 +6,7 @@ import { CashbackModel } from '../model/cashback.model';
 export class CashbackModelMapper implements IMapper<CashbackModel, any> {
   serialize(target: any): CashbackModel {
     const result: CashbackModel = new CashbackModel();
+    if (!target) return result;
 
     if (target.cpf) result.dealer_cpf = target.cpf;
     if (target.body) {

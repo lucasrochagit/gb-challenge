@@ -7,6 +7,7 @@ import { AuthModel } from '../model/auth.model';
 export class AuthModelMapper implements IMapper<AuthModel, Auth> {
   serialize(target: Auth): AuthModel {
     const result: AuthModel = new AuthModel();
+    if (!target) return result;
 
     if (target.id) result.id = target.id;
     if (target.access_token) result.access_token = target.access_token;
@@ -22,6 +23,7 @@ export class AuthModelMapper implements IMapper<AuthModel, Auth> {
 
   deserialize(source: AuthModel): Auth {
     const result: Auth = new Auth();
+    if (!source) return result;
 
     if (source.access_token) result.access_token = source.access_token;
     if (source.refresh_token) result.refresh_token = source.refresh_token;

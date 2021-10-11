@@ -7,6 +7,7 @@ import { SaleModel } from '../model/sale.model';
 export class SaleModelMapper implements IMapper<SaleModel, Sale> {
   serialize(target: Sale): SaleModel {
     const result: SaleModel = new SaleModel();
+    if (!target) return result;
 
     if (target.id) result.id = target.id;
     if (target.code) result.code = target.code;
@@ -25,6 +26,7 @@ export class SaleModelMapper implements IMapper<SaleModel, Sale> {
 
   deserialize(source: SaleModel): Sale {
     const result: Sale = new Sale();
+    if (!source) return result;
 
     if (source.code) result.code = source.code;
     if (source.value) result.value = source.value;
