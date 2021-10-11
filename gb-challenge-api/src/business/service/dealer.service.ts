@@ -62,7 +62,10 @@ export class DealerService {
     return this._mapper.serialize(result);
   }
 
-  async updatePassword(_id: string, passwords: DealerPasswordModel): Promise<void> {
+  async updatePassword(
+    _id: string,
+    passwords: DealerPasswordModel,
+  ): Promise<void> {
     const dealer: Dealer = await this._repository.findOne({ _id });
 
     if (
@@ -79,7 +82,10 @@ export class DealerService {
   }
 
   async deleteById(_id: string): Promise<void> {
-    await this._repository.deleteOne({ _id });
+    const result: Dealer = await this._repository.deleteOne({ _id });
+    if (!result) {
+      throw new NotFoundException('Dealer not found or already removed.');
+    }
   }
 
   private async checkExistsByUniqueFields(

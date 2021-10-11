@@ -24,8 +24,8 @@ export class BaseRepository<Document, Schema> {
     });
   }
 
-  async deleteOne(filter: FilterQuery<Document>): Promise<void> {
-    await this._model.findOneAndDelete(filter);
+  async deleteOne(filter: FilterQuery<Document>): Promise<Document> {
+    return this._model.findOneAndDelete(filter);
   }
 
   async checkExists(filter: FilterQuery<Document>): Promise<boolean> {

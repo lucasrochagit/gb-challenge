@@ -46,7 +46,10 @@ export class SaleService {
   }
 
   async deleteById(_id: string): Promise<void> {
-    await this._repository.deleteOne({ _id });
+    const result: Sale = await this._repository.deleteOne({ _id });
+    if (!result) {
+      throw new NotFoundException('Sale not found or already removed.');
+    }
   }
 
   private setGeneratedInfo(sale: Sale): Sale {
