@@ -35,16 +35,15 @@ export class AuthService {
       );
     }
 
-    const { id: owner } = dealer;
-    const authData: Auth = this.generateAuth(owner);
+    const authData: Auth = this.generateAuth(dealer.id);
     const isAlreadyAuthenticated: boolean =
       await this._authRepository.checkExists({
-        owner,
+        owner: dealer.id,
       });
 
     if (isAlreadyAuthenticated) {
       return this._mapper.serialize(
-        await this._authRepository.updateOne({ owner }, authData),
+        await this._authRepository.updateOne({ owner: dealer.id }, authData),
       );
     }
 
