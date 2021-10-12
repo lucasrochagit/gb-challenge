@@ -12,6 +12,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { IsValidCPF } from '../validator/is.valid.cpf';
+import { IsValidLocaleDate } from '../validator/is.valid.locale.date';
 import { ReadOnlyDTO } from './readonly.dto';
 
 export type SaleDTO = CreateSaleDTO & UpdateSaleDTO;
@@ -33,6 +34,7 @@ export class CreateSaleDTO extends ReadOnlyDTO {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
+  @IsValidLocaleDate()
   date: string;
 
   @IsDefined()
@@ -79,6 +81,7 @@ export class UpdateSaleDTO extends ReadOnlyDTO {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
+  @IsValidLocaleDate()
   date: string;
 
   @ValidateIf((dto) => dto.dealer_cpf !== undefined)
