@@ -30,9 +30,7 @@ describe('IsValidCPFConstraint', () => {
       const result = validator.defaultMessage({
         property: 'cpf',
       } as ValidationArguments);
-      expect(result).toBe(
-        'cpf must comply with the Receita Federal rules for CPF',
-      );
+      expect(result).toBe('cpf must comply with the RFB rules for CPF');
     });
   });
 });

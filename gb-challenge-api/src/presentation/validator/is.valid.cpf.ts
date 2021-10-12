@@ -14,7 +14,7 @@ export class IsValidCPFConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage?(validationArguments?: ValidationArguments): string {
-    return `${validationArguments.property} must comply with the Receita Federal rules for CPF`;
+    return `${validationArguments.property} must comply with the RFB rules for CPF`;
   }
 }
 

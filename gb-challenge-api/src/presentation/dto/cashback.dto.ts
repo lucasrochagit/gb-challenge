@@ -1,7 +1,6 @@
 import {
   IsDefined,
   IsNotEmpty,
-  IsNumberString,
   IsString,
   Matches,
 } from 'class-validator';
