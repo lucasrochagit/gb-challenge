@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthModel } from '../../business/model/auth.model';
 import { AuthRequestModel } from '../../business/model/auth.request.model';
 import { AuthService } from '../../business/service/auth.service';
@@ -15,6 +15,7 @@ export class AuthController {
   ) {}
 
   @Post()
+  @HttpCode(HttpStatus.OK)
   async auth(@Body() dto: AuthRequestDTO): Promise<AuthDTO> {
     const model: AuthRequestModel = this._authRequestDTOMapper.deserialize(dto);
     const result: AuthModel = await this._service.auth(model);
@@ -22,6 +23,7 @@ export class AuthController {
   }
 
   @Post('/refresh')
+  @HttpCode(HttpStatus.OK)
   async refreshToken(@Body() dto: RefreshTokenDTO): Promise<AuthDTO> {
     const model: AuthModel = this._authDTOMapper.deserialize(dto);
     const result: AuthModel = await this._service.refreshToken(model);

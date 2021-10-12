@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
+import { DealerRepository } from '../../infrastructure/repository/dealer.repository';
 import { SaleRepository } from '../../infrastructure/repository/sale.repository';
 import { Sale } from '../../infrastructure/schema/sale.schema';
 import { SaleEnum, SaleStatusEnum } from '../enum/sale.enum';
@@ -9,10 +13,12 @@ import { SaleModel } from '../model/sale.model';
 export class SaleService {
   constructor(
     private readonly _repository: SaleRepository,
+    private readonly _dealerRepository: DealerRepository,
     private readonly _mapper: SaleModelMapper,
   ) {}
 
   async create(item: SaleModel): Promise<SaleModel> {
+    await this.checkExistsDealer(item.dealer_cpf);
     const sale: Sale = this._mapper.deserialize(item);
     const result: Sale = await this._repository.create(
       this.setGeneratedInfo(sale),
@@ -34,6 +40,9 @@ export class SaleService {
   }
 
   async updateById(_id: string, item: SaleModel): Promise<SaleModel> {
+    if (item.dealer_cpf) {
+      await this.checkExistsDealer(item.dealer_cpf);
+    }
     const sale: Sale = this._mapper.deserialize(item);
     const result: Sale = await this._repository.updateOne(
       { _id },
@@ -49,6 +58,15 @@ export class SaleService {
     const result: Sale = await this._repository.deleteOne({ _id });
     if (!result) {
       throw new NotFoundException('Sale not found or already removed.');
+    }
+  }
+
+  private async checkExistsDealer(dealerCpf: string): Promise<void> {
+    const dealerExists: boolean = await this._dealerRepository.checkExists({
+      cpf: dealerCpf,
+    });
+    if (!dealerExists) {
+      throw new NotFoundException('Dealer not found or already removed.');
     }
   }
 
