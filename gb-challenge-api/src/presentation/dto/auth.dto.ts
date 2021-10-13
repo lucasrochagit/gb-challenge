@@ -5,6 +5,7 @@ import {
   IsJWT,
   IsNotEmpty,
   IsString,
+  Length,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -43,5 +44,6 @@ export class RefreshTokenDTO {
   @IsString()
   @IsNotEmpty()
   @IsHexadecimal()
+  @Length(64)
   refresh_token: string;
 }
