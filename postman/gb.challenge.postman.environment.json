@@ -4,36 +4,36 @@
 	"values": [
 		{
 			"key": "sale_code",
-			"value": "123",
+			"value": "20211012205550288",
 			"enabled": true
 		},
 		{
 			"key": "sale_date",
-			"value": "08/10/2021",
+			"value": "13/10/2021",
 			"enabled": true
 		},
 		{
 			"key": "dealer_cpf",
-			"value": "",
+			"value": "472.970.430-44",
 			"enabled": true
 		},
 		{
 			"key": "access_token",
-			"value": "",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MTY2NjJjN2U1MzUyNDkwMDM1NmIyMDAiLCJpYXQiOjE2MzQwOTk5NTksImV4cCI6MTYzNDEyODc1OX0.gk90XJvmnQf8b4nGiZHSujKrmdS-xLo0gmSh77qAlMY",
 			"enabled": true
 		},
 		{
 			"key": "refresh_token",
-			"value": "",
+			"value": "a03381bde10adcbc3f873fe3c1a6a896a1d80a6867c587e81e960f73794efedf",
 			"enabled": true
 		},
 		{
 			"key": "locale_",
-			"value": "",
+			"value": "20211013044250187",
 			"enabled": true
 		}
 	],
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2021-10-13T04:44:37.550Z",
+	"_postman_exported_at": "2021-10-13T05:32:03.004Z",
 	"_postman_exported_using": "Postman/8.12.4"
 }
