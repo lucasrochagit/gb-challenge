@@ -1,13 +1,11 @@
-import {
-  Injectable,
-  NotFoundException
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DealerRepository } from '../../infrastructure/repository/dealer.repository';
 import { SaleRepository } from '../../infrastructure/repository/sale.repository';
 import { Sale } from '../../infrastructure/schema/sale.schema';
 import { SaleEnum, SaleStatusEnum } from '../enum/sale.enum';
 import { SaleModelMapper } from '../mapper/sale.model.mapper';
 import { SaleModel } from '../model/sale.model';
+import { SaleUtil } from '../util/sale.util';
 
 @Injectable()
 export class SaleService {
@@ -79,19 +77,11 @@ export class SaleService {
 
     if (sale.value) {
       sale.value = Number(sale.value.toFixed(2));
-      sale.cashback_percentage = 10;
-
-      if (sale.value >= 1000 && sale.value <= 1500) {
-        sale.cashback_percentage = 15;
-      }
-
-      if (sale.value > 1500) {
-        sale.cashback_percentage = 20;
-      }
-
-      sale.cashback_value = Number(
-        ((sale.cashback_percentage / 100) * sale.value).toFixed(2),
-      );
+      const { cashback_percentage, cashback_value } =
+        SaleUtil.calculateCashback(sale.value);
+      sale.cashback_percentage = cashback_percentage;
+      sale.cashback_percentage = 20;
+      sale.cashback_value = cashback_value;
     }
     return sale;
   }
