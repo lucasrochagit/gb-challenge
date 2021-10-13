@@ -1,87 +1,76 @@
-import { HttpStatus, UnauthorizedException } from '@nestjs/common';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { getId } from 'json-generator';
-import { HttpMethod } from '../../../../src/common/enum/http.enum';
 import { RequestRepository } from '../../../../src/infrastructure/repository/request.repository';
+import axios from 'axios';
+import {
+  BadRequestException,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 describe('RequestRepository', () => {
   let repository: RequestRepository;
-  let axiosMockAdapter: MockAdapter;
-  
   let url: string;
   let resourceInfo: any;
 
   beforeAll(() => {
     repository = new RequestRepository();
-    axiosMockAdapter = new MockAdapter(axios);
     url = 'http://localhost:3000/resources';
     resourceInfo = { id: getId('objectId'), name: 'John Doe' };
   });
 
-  afterEach(() => {
-    axiosMockAdapter.reset();
-  });
+  describe('get()', () => {
+    describe('when make a GET request', () => {
+      it('should return the response body', async () => {
+        jest
+          .spyOn(axios, 'get')
+          .mockResolvedValueOnce({ data: resourceInfo, status: HttpStatus.OK });
 
-  describe('request()', () => {
-    describe('when request is successful', () => {
-      it('should return the response body as json', async () => {
-        axiosMockAdapter.onGet(url).replyOnce(HttpStatus.OK, resourceInfo);
-
-        const result = await repository.request(HttpMethod.GET, { url });
-        expect(result).toMatchObject(resourceInfo);
-      });
-
-      it('should return the response body as json string', async () => {
-        axiosMockAdapter
-          .onGet(url)
-          .replyOnce(HttpStatus.OK, JSON.stringify(resourceInfo));
-
-        const result = await repository.request(HttpMethod.GET, { url });
+        const result = await repository.get({ url });
         expect(result).toMatchObject(resourceInfo);
       });
     });
 
-    describe('when the response is a string but not a JSON string', () => {
-      it('should return the response', async () => {
-        axiosMockAdapter.onGet(url).replyOnce(HttpStatus.OK, 'Hello World');
+    describe('when response is a JSON string', () => {
+      it('should return the response body', async () => {
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({
+          data: JSON.stringify(resourceInfo),
+          status: HttpStatus.OK,
+        });
 
-        const result = await repository.request(HttpMethod.GET, { url });
-        expect(result).toEqual('Hello World');
+        const result = await repository.get({ url });
+        expect(result).toMatchObject(resourceInfo);
       });
     });
 
-    describe('when request returns a http exception', () => {
-      it('should throw the exception', async () => {
-        const exception = new UnauthorizedException('Unauthorized');
-        axiosMockAdapter
-          .onGet(url)
-          .replyOnce(HttpStatus.UNAUTHORIZED, exception.getResponse());
+    describe('when the request returns an exception', () => {
+      it('shoud return the reffer HttpException', async () => {
+        const exception = new UnauthorizedException(
+          'You cannot do this request',
+        );
+
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({
+          data: exception.getResponse(),
+          status: HttpStatus.UNAUTHORIZED,
+        });
 
         try {
-          await repository.request(HttpMethod.GET, { url });
+          await repository.get({ url });
         } catch (err) {
-          expect(err).toHaveProperty('status', exception.getStatus());
-          expect(err.response).toHaveProperty('message', 'Unauthorized');
+          expect(err).toMatchObject(exception);
         }
       });
     });
 
-    describe('when request returns a generic exception', () => {
-      it('should throw the exception', async () => {
-        const exception = { message: 'Generic Exception' };
-        axiosMockAdapter
-          .onGet(url)
-          .replyOnce(HttpStatus.INTERNAL_SERVER_ERROR, exception);
+    describe('when an axios error occurs', () => {
+      it('should return the error', async () => {
+        const error = { message: 'Error at do this request' };
+
+        jest.spyOn(axios, 'get').mockRejectedValueOnce(error);
 
         try {
-          await repository.request(HttpMethod.GET, { url });
+          await repository.get({ url });
         } catch (err) {
-          expect(err).toHaveProperty(
-            'status',
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
-          expect(err.response).toHaveProperty('message', 'Generic Exception');
+          expect(err).toMatchObject(error);
         }
       });
     });

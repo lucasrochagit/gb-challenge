@@ -3,6 +3,7 @@ import { SaleStatusEnum } from '../../src/business/enum/sale.enum';
 import { SaleModel } from '../../src/business/model/sale.model';
 import { Sale } from '../../src/infrastructure/schema/sale.schema';
 import { SaleDTO } from '../../src/presentation/dto/sale.dto';
+import { SaleUtil } from '../util/sale.util';
 
 export class SaleMock {
   static asDocumentRequest(info: any): Sale {
@@ -88,15 +89,12 @@ export class SaleMock {
     return result;
   }
 
-  static getInfo(): any {
+  static getInfo(value: number): any {
     const now: Date = new Date();
     const _id: string = getId('objectId');
     const dealerCpf: string = getId('objectId');
-    const cashbackValue: number = 20;
-    const cashbackPercentage: number = 200;
     const status: string = SaleStatusEnum.IN_VALIDATION;
     const date = now.toLocaleDateString();
-    const value = 400;
     const code: string = now.toISOString().replace(/\D+/g, '');
     const createdAt = now.toISOString();
     const updatedAt = now.toISOString();
@@ -104,8 +102,7 @@ export class SaleMock {
     return {
       id: _id,
       dealer_cpf: dealerCpf,
-      cashback_value: cashbackValue,
-      cashback_percentage: cashbackPercentage,
+      ...SaleUtil.calculateCashback(value),
       status: status,
       date: date,
       value: value,

@@ -30,7 +30,7 @@ describe('CashbackService', () => {
   describe('getCashbackAmount()', () => {
     describe('when get cashback from cpf successfully', () => {
       it('should return the cashback amount', async () => {
-        repository.request = jest.fn().mockResolvedValueOnce(cashbackResponse);
+        repository.get = jest.fn().mockResolvedValueOnce(cashbackResponse);
 
         const result = await service.getCashbackAmount(dealerCpf);
         expect(result).toMatchObject(cashbackModelResponse);
@@ -42,7 +42,7 @@ describe('CashbackService', () => {
         const exception = new BadRequestException(
           'Cpf must contains only numbers',
         );
-        repository.request = jest
+        repository.get = jest
           .fn()
           .mockRejectedValueOnce(exception.getResponse());
 

@@ -21,7 +21,7 @@ describe('SaleController', () => {
     mapper = new SaleDTOMapper();
     controller = new SaleController(service, mapper);
 
-    info = SaleMock.getInfo();
+    info = SaleMock.getInfo(200);
     saleResponseModel = SaleMock.asModelResponse(info);
     saleRequestDTO = SaleMock.asDTORequest(info);
     saleResponseDTO = SaleMock.asDTOResponse(info);

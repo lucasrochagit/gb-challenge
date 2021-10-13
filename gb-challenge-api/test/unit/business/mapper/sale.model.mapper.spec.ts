@@ -11,7 +11,7 @@ describe('SaleModelMapper', () => {
 
   beforeAll( () => {
     mapper = new SaleModelMapper();
-    info = SaleMock.getInfo();
+    info = SaleMock.getInfo(200);
     schema = SaleMock.asDocumentResponse(info);
     model = SaleMock.asModelResponse(info);
   });

@@ -46,7 +46,7 @@ describe('SaleController', () => {
 
     dealerInfo = DealerMock.getInfo();
     dealerDTO = DealerMock.asDTORequest(dealerInfo);
-    saleInfo = SaleMock.getInfo();
+    saleInfo = SaleMock.getInfo(200);
     saleDTO = SaleMock.asDTORequest({
       ...saleInfo,
       dealer_cpf: dealerInfo.cpf,

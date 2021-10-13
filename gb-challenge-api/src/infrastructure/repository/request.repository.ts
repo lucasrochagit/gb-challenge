@@ -1,12 +1,5 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { Promise } from 'mongoose';
-import { HttpMethod } from '../../common/enum/http.enum';
 import { JsonUtil } from '../../common/util/json.util';
 
 type Options = {
@@ -18,12 +11,8 @@ type Options = {
 
 @Injectable()
 export class RequestRepository {
-  async request(method: HttpMethod, options: Options): Promise<any> {
-    try {
-      return this.handleResponse(await axios({ method, ...options }));
-    } catch (err) {
-      throw this.handleError(method, options, err);
-    }
+  async get(options: Options): Promise<any> {
+    return this.handleResponse(await axios.get(options.url, options));
   }
 
   private handleResponse(response: any): any | HttpException {
@@ -32,30 +21,6 @@ export class RequestRepository {
       throw new HttpException(body, statusCode);
     }
     return body;
-  }
-
-  private handleError(
-    method: string,
-    options: Options,
-    err: any,
-  ): HttpException {
-    if (err.isAxiosError && err.response.status && err.response.data) {
-      const { body, statusCode } = this.handleBody(err.response);
-      return new HttpException(body, statusCode);
-    }
-
-    const errorBody = {
-      message:
-        'An error occurred while making an external request. Please try again later.',
-      request: {
-        method: method,
-        url: options.url,
-        params: options.params,
-        body: options.data,
-      },
-      details: err,
-    };
-    return new InternalServerErrorException(errorBody);
   }
 
   private handleBody(_body: any): any {
@@ -74,6 +39,6 @@ export class RequestRepository {
   }
 
   private isSuccessStatusCode(status: number): boolean {
-    return status >= 200 && status < 300;
+    return status >= 200 && status <= 299;
   }
 }

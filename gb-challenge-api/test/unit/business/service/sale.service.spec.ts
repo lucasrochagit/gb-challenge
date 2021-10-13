@@ -24,7 +24,7 @@ describe('SaleService', () => {
     mapper = new SaleModelMapper();
     service = new SaleService(repository, dealerRepository, mapper);
 
-    saleInfo = SaleMock.getInfo();
+    saleInfo = SaleMock.getInfo(200);
     saleResponse = SaleMock.asDocumentResponse(saleInfo);
     saleRequestModel = SaleMock.asModelRequest(saleInfo);
     saleResponseModel = SaleMock.asModelResponse(saleInfo);
@@ -33,13 +33,40 @@ describe('SaleService', () => {
 
   describe('create()', () => {
     describe('when create is successful', () => {
-      it('should return the created sale', async () => {
+      it('should return the created sale for value below R$ 1000,00', async () => {
+        const info = SaleMock.getInfo(200);
+        const request = SaleMock.asModelRequest(info);
+        const response = SaleMock.asDocumentResponse(info);
         dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.checkExists = jest.fn().mockResolvedValueOnce(false);
-        repository.create = jest.fn().mockResolvedValueOnce(saleResponse);
+        repository.create = jest.fn().mockResolvedValueOnce(response);
 
-        const result = await service.create(saleRequestModel);
-        expect(result).toMatchObject(saleResponseModel);
+        const result = await service.create(request);
+        expect(result).toMatchObject(response);
+      });
+
+      it('should return the created sale for value between R$ 1000,00 and R$ 1500', async () => {
+        const info = SaleMock.getInfo(200);
+        const request = SaleMock.asModelRequest(info);
+        const response = SaleMock.asDocumentResponse(info);
+        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        repository.create = jest.fn().mockResolvedValueOnce(response);
+
+        const result = await service.create(request);
+        expect(result).toMatchObject(response);
+      });
+
+      it('should return the created sale for value greather than or equal R$ 1500,00', async () => {
+        const info = SaleMock.getInfo(1800);
+        const request = SaleMock.asModelRequest(info);
+        const response = SaleMock.asDocumentResponse(info);
+        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        repository.create = jest.fn().mockResolvedValueOnce(response);
+
+        const result = await service.create(request);
+        expect(result).toMatchObject(response);
       });
     });
 

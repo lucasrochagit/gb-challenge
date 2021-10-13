@@ -12,7 +12,7 @@ describe('SaleDTOMapper', () => {
 
   beforeAll(() => {
     mapper = new SaleDTOMapper();
-    info = SaleMock.getInfo();
+    info = SaleMock.getInfo(200);
     model = SaleMock.asModelResponse(info);
     dtoRequest = SaleMock.asDTORequest(info);
     dtoResponse = SaleMock.asDTOResponse(info);
