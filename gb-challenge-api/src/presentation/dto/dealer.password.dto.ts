@@ -15,7 +15,7 @@ export class UpdateDealerPasswordDTO {
   @IsNotEmpty()
   @MinLength(8)
   @MaxLength(20)
-  old_password: string;
+  current_password: string;
 
   @IsDefined()
   @IsString()

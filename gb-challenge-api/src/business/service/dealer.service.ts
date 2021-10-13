@@ -72,7 +72,7 @@ export class DealerService {
       throw new NotFoundException('Dealer not found or already removed.');
     }
 
-    if (!PasswordUtil.isSamePassword(passwords.old_password, dealer.password)) {
+    if (!PasswordUtil.isSamePassword(passwords.current_password, dealer.password)) {
       throw new BadRequestException(
         'Old password does not match with current password.',
       );

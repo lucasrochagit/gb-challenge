@@ -34,7 +34,7 @@ describe('DealerService', () => {
     dealerRequestModel = DealerMock.asModelRequest(dealerInfo);
     dealerResponseModel = DealerMock.asModelResponse(dealerInfo);
     dealerPasswordRequestModel = DealerMock.asModelPasswordRequest({
-      old_password: dealerInfo.password,
+      current_password: dealerInfo.password,
       new_password: 'myn3wp4ssw0rd',
     });
     databaseError = { message: 'Database Error' };
@@ -277,12 +277,12 @@ describe('DealerService', () => {
       });
     });
 
-    describe('when old password does not match with current password', () => {
+    describe('when current password does not match with the dealer password', () => {
       it('should return an error', async () => {
         repository.findOne = jest.fn().mockResolvedValueOnce(dealerResponse);
 
         const invalidOldPassword = {
-          old_password: 'randomPassword',
+          current_password: 'randomPassword',
           new_password: dealerPasswordRequestModel.new_password,
         } as DealerPasswordModel;
 

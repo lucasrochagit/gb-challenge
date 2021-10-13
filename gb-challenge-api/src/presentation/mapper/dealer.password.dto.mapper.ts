@@ -18,7 +18,7 @@ export class DealerPasswordDTOMapper
     const result: DealerPasswordModel = new DealerPasswordModel();
     if (!source) return result;
 
-    if (source.old_password) result.old_password = source.old_password;
+    if (source.current_password) result.current_password = source.current_password;
     if (source.new_password) result.new_password = source.new_password;
 
     return result;

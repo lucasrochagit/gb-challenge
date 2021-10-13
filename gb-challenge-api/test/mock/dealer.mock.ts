@@ -59,7 +59,7 @@ export class DealerMock {
   static asModelPasswordRequest(info: any): DealerPasswordModel {
     const result: DealerPasswordModel = new DealerPasswordModel();
 
-    result.old_password = info.old_password;
+    result.current_password = info.current_password;
     result.new_password = info.new_password;
 
     return result;
@@ -92,7 +92,7 @@ export class DealerMock {
   static asDTOPasswordRequest(info: any): UpdateDealerPasswordDTO {
     const result: UpdateDealerPasswordDTO = new UpdateDealerPasswordDTO();
 
-    result.old_password = info.old_password;
+    result.current_password = info.current_password;
     result.new_password = info.new_password;
 
     return result;

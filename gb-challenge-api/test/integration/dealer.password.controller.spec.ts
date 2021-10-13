@@ -37,7 +37,7 @@ describe('DealerPasswordController', () => {
     dealerInfo = DealerMock.getInfo();
     dealerDTO = DealerMock.asDTORequest(dealerInfo);
     passwordInfo = {
-      old_password: dealerInfo.password,
+      current_password: dealerInfo.password,
       new_password: 'n3wP4ssw0rd',
     };
     updatePasswordDTO = DealerMock.asDTOPasswordRequest(passwordInfo);
@@ -73,7 +73,7 @@ describe('DealerPasswordController', () => {
       });
     });
 
-    describe('when the old password does not match with current password', () => {
+    describe('when the current password does not match with the dealer password', () => {
       it('should return an error for mismatched passwords', async () => {
         const response = await request
           .patch(`/dealers/${savedDealer.id}/password`)
@@ -93,7 +93,7 @@ describe('DealerPasswordController', () => {
           .send({})
           .expect(HttpStatus.BAD_REQUEST);
         validateBadRequestDTOBody(response.body, [
-          'old_password should not be null or undefined',
+          'current_password should not be null or undefined',
           'new_password should not be null or undefined',
         ]);
       });
@@ -108,16 +108,16 @@ describe('DealerPasswordController', () => {
         ]);
       });
 
-      it('should return an error for invalid old password', async () => {
+      it('should return an error for invalid current password', async () => {
         const response = await request
           .patch(`/dealers/${savedDealer.id}/password`)
           .send({
-            old_password: '123',
+            current_password: '123',
             new_password: updatePasswordDTO.new_password,
           })
           .expect(HttpStatus.BAD_REQUEST);
         validateBadRequestDTOBody(response.body, [
-          'old_password must be longer than or equal to 8 characters',
+          'current_password must be longer than or equal to 8 characters',
         ]);
       });
 
@@ -125,7 +125,7 @@ describe('DealerPasswordController', () => {
         const response = await request
           .patch(`/dealers/${savedDealer.id}/password`)
           .send({
-            old_password: updatePasswordDTO.old_password,
+            current_password: updatePasswordDTO.current_password,
             new_password: '123',
           })
           .expect(HttpStatus.BAD_REQUEST);

@@ -30,7 +30,7 @@ describe('DealerPasswordDTOMapper', () => {
     describe('when parse a dto to a model', () => {
       it('should return the mapped model', () => {
         const result = mapper.deserialize(dto);
-        expect(result).toHaveProperty('old_password', dto.old_password);
+        expect(result).toHaveProperty('current_password', dto.current_password);
         expect(result).toHaveProperty('new_password', dto.new_password);
       });
     });

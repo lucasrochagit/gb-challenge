@@ -22,7 +22,7 @@ describe('DealerPasswordController', () => {
 
     info = DealerMock.getInfo();
     dealerRequestDTO = DealerMock.asDTOPasswordRequest({
-      old_password: 'my0ldp4ssw0rd',
+      current_password: 'my0ldp4ssw0rd',
       new_password: 'myn3wp4ssw0rd',
     });
     dealerId = getId('objectId');
