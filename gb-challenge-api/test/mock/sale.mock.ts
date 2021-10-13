@@ -79,6 +79,7 @@ export class SaleMock {
   static asDTOResponse(info: any): SaleDTO {
     const result: SaleDTO = {} as SaleDTO;
 
+    result.id = info.id;
     result.cashback_value = info.cashback_value;
     result.cashback_percentage = info.cashback_percentage;
     result.status = info.status;

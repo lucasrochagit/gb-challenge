@@ -9,6 +9,7 @@ export class SaleDTOMapper implements IMapper<SaleDTO, SaleModel> {
     const result: SaleDTO = {} as SaleDTO;
     if (!target) return result;
 
+    if (target.id) result.id = target.id;
     if (target.code) result.code = target.code;
     if (target.value) result.value = target.value;
     if (target.date) result.date = target.date;

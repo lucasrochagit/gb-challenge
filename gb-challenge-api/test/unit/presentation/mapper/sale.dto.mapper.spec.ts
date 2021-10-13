@@ -22,7 +22,7 @@ describe('SaleDTOMapper', () => {
     describe('when parse a model to a dto', () => {
       it('should return the mapped dto', () => {
         const result = mapper.serialize(model);
-        expect(result).toHaveProperty('id', undefined);
+        expect(result).toHaveProperty('id', dtoResponse.id);
         expect(result).toHaveProperty('code', dtoResponse.code);
         expect(result).toHaveProperty('value', dtoResponse.value);
         expect(result).toHaveProperty('date', dtoResponse.date);
