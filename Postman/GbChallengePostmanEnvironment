@@ -1,0 +1,39 @@
+{
+	"id": "0bc0276d-c979-4626-988f-0c4034ba2f5e",
+	"name": "Gb Challenge Environment",
+	"values": [
+		{
+			"key": "sale_code",
+			"value": "123",
+			"enabled": true
+		},
+		{
+			"key": "sale_date",
+			"value": "08/10/2021",
+			"enabled": true
+		},
+		{
+			"key": "dealer_cpf",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "locale_",
+			"value": "",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-10-13T04:44:37.550Z",
+	"_postman_exported_using": "Postman/8.12.4"
+}
