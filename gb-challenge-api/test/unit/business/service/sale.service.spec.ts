@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { mock } from 'sinon';
 import { SaleModelMapper } from '../../../../src/business/mapper/sale.model.mapper';
 import { SaleModel } from '../../../../src/business/model/sale.model';
@@ -37,8 +37,8 @@ describe('SaleService', () => {
         const info = SaleMock.getInfo(200);
         const request = SaleMock.asModelRequest(info);
         const response = SaleMock.asDocumentResponse(info);
-        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.create = jest.fn().mockResolvedValueOnce(response);
 
         const result = await service.create(request);
@@ -49,8 +49,8 @@ describe('SaleService', () => {
         const info = SaleMock.getInfo(200);
         const request = SaleMock.asModelRequest(info);
         const response = SaleMock.asDocumentResponse(info);
-        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.create = jest.fn().mockResolvedValueOnce(response);
 
         const result = await service.create(request);
@@ -61,12 +61,27 @@ describe('SaleService', () => {
         const info = SaleMock.getInfo(1800);
         const request = SaleMock.asModelRequest(info);
         const response = SaleMock.asDocumentResponse(info);
-        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.create = jest.fn().mockResolvedValueOnce(response);
 
         const result = await service.create(request);
         expect(result).toMatchObject(response);
+      });
+    });
+
+    describe('when sale with same code alrady exists', () => {
+      it('should return an error', async () => {
+        const exception = new ConflictException(
+          'A sale with same code already exists.',
+        );
+        repository.checkExists = jest.fn().mockResolvedValueOnce(true);
+
+        try {
+          await service.create(saleRequestModel);
+        } catch (err) {
+          expect(err).toMatchObject(exception);
+        }
       });
     });
 
@@ -75,9 +90,8 @@ describe('SaleService', () => {
         const exception = new NotFoundException(
           'Dealer not found or already removed.',
         );
-        dealerRepository.checkExists = jest
-          .fn()
-          .mockRejectedValueOnce(exception);
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
 
         try {
           await service.create(saleRequestModel);
@@ -88,7 +102,18 @@ describe('SaleService', () => {
     });
 
     describe('when a database error occurs', () => {
-      it('should return an error for dealerRepsoitory.checkExists', async () => {
+      it('should return an error for repository.checkExists', async () => {
+        repository.checkExists = jest.fn().mockRejectedValueOnce(databaseError);
+
+        try {
+          await service.create(saleRequestModel);
+        } catch (err) {
+          expect(err).toMatchObject(databaseError);
+        }
+      });
+
+      it('should return an error for repository.create', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
         dealerRepository.checkExists = jest
           .fn()
           .mockRejectedValueOnce(databaseError);
@@ -101,6 +126,7 @@ describe('SaleService', () => {
       });
 
       it('should return an error for repository.create', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
         dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.create = jest.fn().mockRejectedValueOnce(databaseError);
 
@@ -186,6 +212,7 @@ describe('SaleService', () => {
   describe('updateById()', () => {
     describe('when updateById is successful', () => {
       it('should return the updated sale', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
         dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.updateOne = jest.fn().mockResolvedValueOnce(saleResponse);
 
@@ -197,10 +224,24 @@ describe('SaleService', () => {
       });
     });
 
+    describe('when a sale with different id and same code already exists', () => {
+      it('should return an error', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(true);
+
+        try {
+          await service.updateById(saleResponse.id, saleRequestModel);
+        } catch (err) {
+          expect(err).toMatchObject(
+            new ConflictException('A sale with same code already exists.'),
+          );
+        }
+      });
+    });
+
     describe('when update dealer cpf and it does not exists', () => {
       it('should return an error', async () => {
-        dealerRepository.checkExists = jest.fn();
-        jest.fn().mockResolvedValueOnce(false);
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
+        dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(false);
 
         try {
           await service.updateById(saleResponse.id, saleRequestModel);
@@ -214,6 +255,7 @@ describe('SaleService', () => {
 
     describe('when the sale is not founded', () => {
       it('should return an error', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
         dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.updateOne = jest.fn().mockResolvedValueOnce(null);
 
@@ -229,6 +271,18 @@ describe('SaleService', () => {
 
     describe('when a database error occurs', () => {
       it('should return an error for dealerRepository.checkExists', async () => {
+        repository.checkExists = jest
+          .fn()
+          .mockRejectedValueOnce(databaseError);
+
+        try {
+          await service.updateById(saleResponse.id, saleRequestModel);
+        } catch (err) {
+          expect(err).toMatchObject(databaseError);
+        }
+      });
+      it('should return an error for dealerRepository.checkExists', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
         dealerRepository.checkExists = jest
           .fn()
           .mockRejectedValueOnce(databaseError);
@@ -241,6 +295,7 @@ describe('SaleService', () => {
       });
 
       it('should return an error for repository.updateOne', async () => {
+        repository.checkExists = jest.fn().mockResolvedValueOnce(false);
         dealerRepository.checkExists = jest.fn().mockResolvedValueOnce(true);
         repository.updateOne = jest.fn().mockRejectedValueOnce(databaseError);
 

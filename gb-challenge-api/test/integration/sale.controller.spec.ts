@@ -19,6 +19,7 @@ import { DealerMock } from '../mock/dealer.mock';
 import { SaleMock } from '../mock/sale.mock';
 import {
   validateBadRequestDTOBody,
+  validateConflictBody,
   validateNotFoundBody,
 } from '../util/exception.validation.util';
 import { cleanCollections, create, deleteMany } from '../util/schema.util';
@@ -53,6 +54,7 @@ describe('SaleController', () => {
     });
     saleApprovedInfo = {
       ...saleInfo,
+      code: new Date().toISOString().replace(/\D+/g, '').concat('000'),
       dealer_cpf: SaleEnum.DEALER_CPF_ALWAYS_APPROVE_SALE,
       status: SaleStatusEnum.APPROVED,
     };
@@ -88,11 +90,31 @@ describe('SaleController', () => {
       });
     });
 
+    describe('when a sale with same code already exists', () => {
+      it('should return an error for another sale with same code', async () => {
+        const response = await request
+          .post('/sales')
+          .send({
+            ...saleDTO,
+            dealer_cpf: getCpf(true),
+          })
+          .expect(HttpStatus.CONFLICT);
+        validateConflictBody(
+          response.body,
+          'A sale with same code already exists.',
+        );
+      });
+    });
+
     describe('when the dealer is not founded by cpf', () => {
       it('should return an error for not found the dealer', async () => {
         const response = await request
           .post('/sales')
-          .send({ ...saleDTO, dealer_cpf: getCpf(true) })
+          .send({
+            ...saleDTO,
+            code: new Date().toISOString().replace(/\D+/g, '').concat('123'),
+            dealer_cpf: getCpf(true),
+          })
           .expect(HttpStatus.NOT_FOUND);
         validateNotFoundBody(
           response.body,
@@ -246,6 +268,19 @@ describe('SaleController', () => {
           .send({ date: saleInfo.date })
           .expect(HttpStatus.OK);
         validateSuccessBody(response.body, saleInfo);
+      });
+    });
+
+    describe('when a sale with different id and same code already exists', () => {
+      it('should return an error for dupplicated sale code', async () => {
+        const response = await request
+          .put(`/sales/${getId('objectId')}`)
+          .send({ code: saleInfo.code })
+          .expect(HttpStatus.CONFLICT);
+        validateConflictBody(
+          response.body,
+          'A sale with same code already exists.',
+        );
       });
     });
 

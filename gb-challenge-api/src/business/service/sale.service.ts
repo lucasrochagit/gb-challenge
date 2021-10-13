@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 import { DealerRepository } from '../../infrastructure/repository/dealer.repository';
 import { SaleRepository } from '../../infrastructure/repository/sale.repository';
-import { Sale } from '../../infrastructure/schema/sale.schema';
+import { Sale, SaleDocument } from '../../infrastructure/schema/sale.schema';
 import { SaleEnum, SaleStatusEnum } from '../enum/sale.enum';
 import { SaleModelMapper } from '../mapper/sale.model.mapper';
 import { SaleModel } from '../model/sale.model';
@@ -16,6 +21,7 @@ export class SaleService {
   ) {}
 
   async create(item: SaleModel): Promise<SaleModel> {
+    await this.checkExistsByUniqueFields({ code: item.code });
     await this.checkExistsDealer(item.dealer_cpf);
     const sale: Sale = this._mapper.deserialize(item);
     const result: Sale = await this._repository.create(
@@ -38,6 +44,12 @@ export class SaleService {
   }
 
   async updateById(_id: string, item: SaleModel): Promise<SaleModel> {
+    if (item.code) {
+      await this.checkExistsByUniqueFields({
+        _id: { $ne: _id },
+        code: item.code,
+      });
+    }
     if (item.dealer_cpf) {
       await this.checkExistsDealer(item.dealer_cpf);
     }
@@ -83,5 +95,15 @@ export class SaleService {
       sale.cashback_value = cashback_value;
     }
     return sale;
+  }
+
+  private async checkExistsByUniqueFields(
+    filter: FilterQuery<SaleDocument>,
+  ): Promise<void> {
+    const exists: boolean = await this._repository.checkExists(filter);
+
+    if (exists) {
+      throw new ConflictException('A sale with same code already exists.');
+    }
   }
 }
