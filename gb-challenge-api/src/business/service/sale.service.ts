@@ -80,7 +80,6 @@ export class SaleService {
       const { cashback_percentage, cashback_value } =
         SaleUtil.calculateCashback(sale.value);
       sale.cashback_percentage = cashback_percentage;
-      sale.cashback_percentage = 20;
       sale.cashback_value = cashback_value;
     }
     return sale;

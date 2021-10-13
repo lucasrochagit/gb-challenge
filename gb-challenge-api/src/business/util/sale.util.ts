@@ -5,7 +5,7 @@ export class SaleUtil {
   } {
     if (value === null) return null;
     if (value === undefined) return undefined;
-    
+
     if (!value || value <= 0) {
       return {
         cashback_value: 0,
@@ -17,9 +17,7 @@ export class SaleUtil {
 
     if (value >= 1000 && value <= 1500) {
       cashback_percentage = 15;
-    }
-
-    if (value > 1500) {
+    } else if (value > 1500) {
       cashback_percentage = 20;
     }
 
