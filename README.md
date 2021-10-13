@@ -6,21 +6,23 @@ API do Desafio Técnico requerido no processo seletivo do Grupo Boticário.
 
 ## Recursos Implementados
 
-- ( ✓ ) CRUD de Revendedor (Criar, Listar, Buscar Por ID, Atualizar e Deletar Por ID)
-- ( ✓ ) Endpoint para autenticação (JWT)
+- ( ✓ ) CRUD de revendedor (criar, listar, buscar por id, atualizar e deletar por id)
+- ( ✓ ) Endpoint para autenticação (jwt)
 - ( ✓ ) Endpoint para atualização do token
-- ( ✓ ) CRUD de compras (Criar, LIstar, Buscar por ID, Atualizar e Deletar Por ID)
+- ( ✓ ) CRUD de compras (criar, listar, buscar por id, atualizar e deletar por id)
 - ( ✓ ) Endpoint para buscar o cashback acumulado de um revendedor
 - ( ✓ ) Testes Unitários
 - ( ✓ ) Testes de Integração
 
 ## Recursos Extras
 
-- ( ✓ ) Coleção do Postman contendo todas as requisições suportadas pela API
+- ( ✓ ) Coleção do Postman contendo todas as requisições suportadas pela API e as variáveis de ambiente (veja como
+  importar essas informações no Postman [aqui](https://learning.postman.com/docs/getting-started/introduction/))
 
 ## Recursos Futuros
 
-- ( ✓ ) Suporte à paginação para requisições do tipo GET que retornam uma lista de dados;
+- ( ✓ ) Adicionar a documentação Swagger da API
+- ( ✓ ) Suporte à paginação para requisições do tipo GET que retornam uma lista de dados
 
 ## Validações Implementadas
 
